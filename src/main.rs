@@ -1,3 +1,7 @@
+mod array2d;
+mod rect2d;
+mod vec2d;
+
 use aoc_macros::{days_modules, match_test_days, match_time_days};
 use std::{
     env::{args, Args},
