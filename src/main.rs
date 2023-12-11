@@ -1,4 +1,5 @@
 mod array2d;
+mod math_utils;
 mod rect2d;
 mod vec2d;
 
