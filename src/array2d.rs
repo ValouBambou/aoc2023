@@ -1,4 +1,6 @@
-use std::{fmt::Debug, ops::AddAssign};
+use std::fmt::Debug;
+
+use crate::vec2d::Vec2D;
 
 #[derive(Clone)]
 pub struct Array2D<T: Debug + Clone> {
@@ -29,6 +31,13 @@ impl<T: Debug + Copy + Default> Array2D<T> {
     }
 }
 
+impl<T: Debug + Copy + Eq> Array2D<T> {
+    pub fn find_index(&self, element: T) -> Option<(usize, usize)> {
+        let idx = self.buf.iter().position(|&x| x == element)?;
+        Some((idx % self.width, idx / self.width))
+    }
+}
+
 impl<T: Debug + Copy> Array2D<T> {
     pub fn new(width: usize, height: usize, buf: Vec<T>) -> Self {
         assert_eq!(
@@ -39,6 +48,15 @@ impl<T: Debug + Copy> Array2D<T> {
         Array2D { buf, width, height }
     }
 
+    #[inline]
+    pub fn width(&self) -> usize {
+        self.width
+    }
+
+    #[inline]
+    pub fn height(&self) -> usize {
+        self.height
+    }
     /// X is the 1 strided axis
     #[inline]
     pub fn get(&self, x: usize, y: usize) -> T {
@@ -54,23 +72,17 @@ impl<T: Debug + Copy> Array2D<T> {
         self.buf[y * self.width + x] = val;
     }
 
-    pub fn neighbors8(&self, x: usize, y: usize) -> Vec<T> {
-        let min_x = x.saturating_sub(1);
-        let min_y = y.saturating_sub(1);
-        let max_x = self.width.min(x + 1);
-        let max_y = self.height.min(y + 1);
-        (min_x..=max_x)
-            .flat_map(move |xi| {
-                (min_y..=max_y).filter_map(move |yi| (xi != x || yi != y).then(|| self.get(xi, yi)))
-            })
-            .collect()
+    #[inline]
+    pub fn setv(&mut self, coord: Vec2D, val: T) {
+        let Vec2D { x, y } = coord;
+        self.set(x as usize, y as usize, val)
     }
 
     pub fn neighbors8_indexed(&self, x: usize, y: usize) -> Vec<(usize, usize, T)> {
         let min_x = x.saturating_sub(1);
         let min_y = y.saturating_sub(1);
-        let max_x = self.width.min(x + 1);
-        let max_y = self.height.min(y + 1);
+        let max_x = (self.width - 1).min(x + 1);
+        let max_y = (self.height - 1).min(y + 1);
         (min_x..=max_x)
             .flat_map(move |xi| {
                 (min_y..=max_y)
@@ -78,11 +90,18 @@ impl<T: Debug + Copy> Array2D<T> {
             })
             .collect()
     }
-}
 
-impl<T: Debug + Clone + AddAssign> Array2D<T> {
-    #[inline]
-    pub fn increment(&mut self, x: usize, y: usize, val: T) {
-        self.buf[y * self.width + x] += val;
+    pub fn neighbors4_indices(
+        &self,
+        x: usize,
+        y: usize,
+    ) -> impl Iterator<Item = (usize, usize)> + '_ {
+        let min_x = x.saturating_sub(1);
+        let min_y = y.saturating_sub(1);
+        let max_x = (self.width - 1).min(x + 1);
+        let max_y = (self.height - 1).min(y + 1);
+        (min_x..=max_x).flat_map(move |xi| {
+            (min_y..=max_y).filter_map(move |yi| ((xi == x) ^ (yi == y)).then(|| (xi, yi)))
+        })
     }
 }

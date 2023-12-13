@@ -7,6 +7,24 @@ pub struct Vec2D {
     pub y: i32,
 }
 
+impl Vec2D {
+    pub fn dot(&self, rhs: &Vec2D) -> i32 {
+        self.x * rhs.x + self.y * rhs.y
+    }
+}
+
+impl<T: TryInto<i32>> From<(T, T)> for Vec2D
+where
+    <T as TryInto<i32>>::Error: Debug,
+{
+    fn from(value: (T, T)) -> Self {
+        Vec2D {
+            x: value.0.try_into().unwrap(),
+            y: value.1.try_into().unwrap(),
+        }
+    }
+}
+
 impl Add for Vec2D {
     type Output = Vec2D;
     fn add(self, rhs: Self) -> Self::Output {
