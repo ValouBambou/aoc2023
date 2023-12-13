@@ -3,19 +3,22 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Vec2D {
-    pub x: i32,
-    pub y: i32,
+    pub x: i64,
+    pub y: i64,
 }
 
 impl Vec2D {
-    pub fn dot(&self, rhs: &Vec2D) -> i32 {
+    pub fn dot(&self, rhs: &Vec2D) -> i64 {
         self.x * rhs.x + self.y * rhs.y
+    }
+    pub fn manhattan_dist(&self, rhs: &Vec2D) -> i64 {
+        (self.x - rhs.x).abs() + (self.y - rhs.y).abs()
     }
 }
 
-impl<T: TryInto<i32>> From<(T, T)> for Vec2D
+impl<T: TryInto<i64>> From<(T, T)> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     fn from(value: (T, T)) -> Self {
         Vec2D {
@@ -35,9 +38,9 @@ impl Add for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> Add<T> for Vec2D
+impl<T: TryInto<i64>> Add<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     type Output = Vec2D;
     fn add(self, rhs: T) -> Self::Output {
@@ -55,9 +58,9 @@ impl AddAssign for Vec2D {
         self.y += rhs.y;
     }
 }
-impl<T: TryInto<i32>> AddAssign<T> for Vec2D
+impl<T: TryInto<i64>> AddAssign<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     fn add_assign(&mut self, rhs: T) {
         let rhs = rhs.try_into().unwrap();
@@ -76,9 +79,9 @@ impl Sub for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> Sub<T> for Vec2D
+impl<T: TryInto<i64>> Sub<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     type Output = Vec2D;
     fn sub(self, rhs: T) -> Self::Output {
@@ -97,9 +100,9 @@ impl SubAssign for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> SubAssign<T> for Vec2D
+impl<T: TryInto<i64>> SubAssign<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     fn sub_assign(&mut self, rhs: T) {
         let rhs = rhs.try_into().unwrap();
@@ -118,9 +121,9 @@ impl Mul for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> Mul<T> for Vec2D
+impl<T: TryInto<i64>> Mul<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     type Output = Vec2D;
     fn mul(self, rhs: T) -> Self::Output {
@@ -139,9 +142,9 @@ impl MulAssign for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> MulAssign<T> for Vec2D
+impl<T: TryInto<i64>> MulAssign<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     fn mul_assign(&mut self, rhs: T) {
         let rhs = rhs.try_into().unwrap();
@@ -160,9 +163,9 @@ impl Div for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> Div<T> for Vec2D
+impl<T: TryInto<i64>> Div<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     type Output = Vec2D;
     fn div(self, rhs: T) -> Self::Output {
@@ -181,9 +184,9 @@ impl DivAssign for Vec2D {
     }
 }
 
-impl<T: TryInto<i32>> DivAssign<T> for Vec2D
+impl<T: TryInto<i64>> DivAssign<T> for Vec2D
 where
-    <T as TryInto<i32>>::Error: Debug,
+    <T as TryInto<i64>>::Error: Debug,
 {
     fn div_assign(&mut self, rhs: T) {
         let rhs = rhs.try_into().unwrap();
