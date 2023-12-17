@@ -48,6 +48,13 @@ impl<T: Debug + Copy> Array2D<T> {
         Array2D { buf, width, height }
     }
 
+    pub fn dimensions(&self) -> Vec2D {
+        Vec2D {
+            x: self.width as i64,
+            y: self.height as i64,
+        }
+    }
+
     #[inline]
     pub fn width(&self) -> usize {
         self.width
@@ -65,6 +72,11 @@ impl<T: Debug + Copy> Array2D<T> {
         self.buf[y * self.width + x]
     }
 
+    #[inline]
+    pub fn getv(&mut self, coord: Vec2D) -> T {
+        let Vec2D { x, y } = coord;
+        self.get(x as usize, y as usize)
+    }
     #[inline]
     pub fn set(&mut self, x: usize, y: usize, val: T) {
         debug_assert!(x < self.width);

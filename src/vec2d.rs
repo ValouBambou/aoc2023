@@ -1,10 +1,30 @@
 use std::fmt::Debug;
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub, SubAssign};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Vec2D {
     pub x: i64,
     pub y: i64,
+}
+impl Index<usize> for Vec2D {
+    type Output = i64;
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            _ => panic!("Invalid Index {index} should be 0 or 1."),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vec2D {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => panic!("Invalid Index {index} should be 0 or 1."),
+        }
+    }
 }
 
 impl Vec2D {
