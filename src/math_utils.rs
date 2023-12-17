@@ -4,9 +4,7 @@ pub fn gcd(mut a: usize, mut b: usize) -> usize {
         return a;
     }
     if b > a {
-        let tmp = a;
-        a = b;
-        b = tmp;
+        std::mem::swap(&mut a, &mut b);
     }
     while b > 0 {
         let temp = a;

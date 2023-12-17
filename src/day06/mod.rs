@@ -15,7 +15,6 @@ impl DaySolution for Day6 {
             s.split_once(':')
                 .unwrap()
                 .1
-                .trim_start()
                 .split_whitespace()
                 .map(|x| x.parse::<usize>().unwrap())
         });
@@ -23,7 +22,6 @@ impl DaySolution for Day6 {
             .next()
             .unwrap()
             .zip(lines.next().unwrap())
-            .into_iter()
             .map(|(time, dist)| {
                 (1..time)
                     .filter(|duration| duration * (time - duration) > dist)

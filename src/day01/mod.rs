@@ -37,15 +37,14 @@ impl DaySolution<u32> for Day1 {
             .sum()
     }
 }
-
+const LETTERS_DIGITS: [&str; 9] = [
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+];
 fn is_valid_digit(chars: &[char], i: usize) -> Option<u32> {
     if let Some(digit) = chars[i].to_digit(10) {
         return Some(digit);
     }
     let n_chars_lefts = chars.len() - i;
-    const LETTERS_DIGITS: [&'static str; 9] = [
-        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    ];
 
     // try spellout letters
     LETTERS_DIGITS

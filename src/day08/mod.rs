@@ -55,7 +55,7 @@ impl DaySolution for Day8 {
                     })
                     .unwrap()
             })
-            .fold(1, |acc, step| math_utils::lcm(acc, step))
+            .fold(1, math_utils::lcm)
     }
 }
 

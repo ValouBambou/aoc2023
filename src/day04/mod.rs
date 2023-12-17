@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use crate::DaySolution;
 
 pub struct Day4;
@@ -56,14 +58,18 @@ fn count_match_wins(line: &str) -> u32 {
     // count match
     let (mut wi, mut i, mut count) = (0, 0, 0);
     while wi < win_nums.len() && i < nums.len() {
-        if nums[i] < win_nums[wi] {
-            i += 1;
-        } else if nums[i] == win_nums[wi] {
-            i += 1;
-            wi += 1;
-            count += 1;
-        } else {
-            wi += 1;
+        match nums[i].cmp(&win_nums[wi]) {
+            Ordering::Less => {
+                i += 1;
+            }
+            Ordering::Equal => {
+                i += 1;
+                wi += 1;
+                count += 1;
+            }
+            Ordering::Greater => {
+                wi += 1;
+            }
         }
     }
     count

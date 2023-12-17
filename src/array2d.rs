@@ -86,7 +86,8 @@ impl<T: Debug + Copy> Array2D<T> {
         (min_x..=max_x)
             .flat_map(move |xi| {
                 (min_y..=max_y)
-                    .filter_map(move |yi| (xi != x || yi != y).then(|| (xi, yi, self.get(xi, yi))))
+                    .filter(move |&yi| (xi != x || yi != y))
+                    .map(move |yi| (xi, yi, self.get(xi, yi)))
             })
             .collect()
     }
@@ -101,7 +102,9 @@ impl<T: Debug + Copy> Array2D<T> {
         let max_x = (self.width - 1).min(x + 1);
         let max_y = (self.height - 1).min(y + 1);
         (min_x..=max_x).flat_map(move |xi| {
-            (min_y..=max_y).filter_map(move |yi| ((xi == x) ^ (yi == y)).then(|| (xi, yi)))
+            (min_y..=max_y)
+                .filter(move |&yi| ((xi == x) ^ (yi == y)))
+                .map(move |yi| (xi, yi))
         })
     }
 }

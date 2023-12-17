@@ -150,5 +150,5 @@ fn intersection(interval1: (u64, u64), interval2: (u64, u64)) -> Option<(u64, u6
     let max_2 = interval2.0 + interval2.1;
     let inter_max = max_1.min(max_2);
     let inter_min = interval1.0.max(interval2.0);
-    (inter_min < inter_max).then(|| (inter_min, inter_max - inter_min))
+    (inter_min < inter_max).then_some((inter_min, inter_max.saturating_sub(inter_min)))
 }
