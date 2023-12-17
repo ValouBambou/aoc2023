@@ -1,6 +1,6 @@
 use crate::array2d::Array2D;
 use crate::vec2d::Vec2D;
-use crate::DaySolution;
+use crate::{parse_utils, DaySolution};
 
 pub struct Day10;
 
@@ -103,11 +103,7 @@ fn count_out_points(map: &mut Array2D<bool>) -> usize {
 }
 
 fn find_cycle(input: &str) -> (usize, usize, Vec<(usize, usize)>) {
-    let input = input.trim();
-    let height = input.lines().count();
-    let width = input.len() / height;
-    let buf: Vec<char> = input.lines().flat_map(str::chars).collect();
-    let pipes = Array2D::new(width, height, buf);
+    let pipes = parse_utils::char_grid(input);
 
     let start = pipes.find_index('S').unwrap();
 
@@ -127,7 +123,7 @@ fn find_cycle(input: &str) -> (usize, usize, Vec<(usize, usize)>) {
             })
         })
         .unwrap();
-    (width, height, cycle)
+    (pipes.width(), pipes.height(), cycle)
 }
 
 fn next_pipe(
