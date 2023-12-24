@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::AddAssign};
 
 use crate::vec2d::Vec2D;
 
@@ -9,13 +9,27 @@ pub struct Array2D<T: Debug + Clone> {
     height: usize,
 }
 
-impl<T: Debug + Copy> Debug for Array2D<T> {
+impl Debug for Array2D<char> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let (w, h) = (self.width, self.height);
         writeln!(f, "Array2D width={w}, height={h} :")?;
         for y in 0..h {
-            let linej = y * w;
-            writeln!(f, "{:?}", self.buf[linej..(linej + w)].to_vec())?;
+            for x in 0..w {
+                write!(f, "{}", self.get(x, y))?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
+    }
+}
+
+impl Debug for Array2D<u8> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let (w, h) = (self.width, self.height);
+        writeln!(f, "Array2D width={w}, height={h} :")?;
+        for y in 0..h {
+            let idx = y * w;
+            writeln!(f, "{:?}", &self.buf[idx..(idx + w)])?;
         }
         Ok(())
     }
@@ -36,8 +50,24 @@ impl<T: Debug + Copy + Eq> Array2D<T> {
         let idx = self.buf.iter().position(|&x| x == element)?;
         Some((idx % self.width, idx / self.width))
     }
+
+    pub fn count<F: Fn(&&T) -> bool>(&self, predicate: F) -> usize {
+        self.buf.iter().filter(predicate).count()
+    }
 }
 
+impl<T: Debug + Copy + AddAssign> Array2D<T> {
+    #[inline]
+    pub fn increment(&mut self, x: usize, y: usize, val: T) {
+        debug_assert!(x < self.width);
+        debug_assert!(y < self.height);
+        self.buf[y * self.width + x] += val;
+    }
+    #[inline]
+    pub fn incrementv(&mut self, coord: Vec2D, val: T) {
+        self.increment(coord.x as usize, coord.y as usize, val)
+    }
+}
 impl<T: Debug + Copy> Array2D<T> {
     pub fn new(width: usize, height: usize, buf: Vec<T>) -> Self {
         assert_eq!(
@@ -46,6 +76,20 @@ impl<T: Debug + Copy> Array2D<T> {
             "Width * Height supposed to eq buf len"
         );
         Array2D { buf, width, height }
+    }
+    pub fn new_filled(width: usize, height: usize, fill: T) -> Self {
+        Array2D {
+            buf: vec![fill; width * height],
+            width,
+            height,
+        }
+    }
+
+    pub fn is_valid_idxv(&self, coord: Vec2D) -> bool {
+        coord.x >= 0
+            && coord.y >= 0
+            && (coord.x as usize) < self.width
+            && (coord.y as usize) < self.height
     }
 
     pub fn dimensions(&self) -> Vec2D {
@@ -73,7 +117,7 @@ impl<T: Debug + Copy> Array2D<T> {
     }
 
     #[inline]
-    pub fn getv(&mut self, coord: Vec2D) -> T {
+    pub fn getv(&self, coord: Vec2D) -> T {
         let Vec2D { x, y } = coord;
         self.get(x as usize, y as usize)
     }

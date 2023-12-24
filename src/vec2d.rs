@@ -34,6 +34,18 @@ impl Vec2D {
     pub fn manhattan_dist(&self, rhs: &Vec2D) -> i64 {
         (self.x - rhs.x).abs() + (self.y - rhs.y).abs()
     }
+    pub fn rotate90_left(&self) -> Self {
+        Vec2D {
+            x: self.y,
+            y: -self.x,
+        }
+    }
+    pub fn rotate90_right(&self) -> Self {
+        Vec2D {
+            x: -self.y,
+            y: self.x,
+        }
+    }
 }
 
 impl<T: TryInto<i64>> From<(T, T)> for Vec2D
